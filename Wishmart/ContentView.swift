@@ -8,17 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
 
-#Preview {
-    ContentView()
+    @EnvironmentObject var authVM: AuthViewModel
+
+    var body: some View {
+        ZStack {
+            switch authVM.step {
+
+            case .login:
+                LoginScreen()
+
+            case .signup:
+                SignupScreen()
+
+            case .otp(let email):
+                OtpScreen(email: email)
+
+            case .home:
+                HomeView()
+            }
+
+            // 🔔 Toast / error overlay
+            if let message = authVM.toastMessage {
+                ToastView(message: message)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            authVM.toastMessage = nil
+                        }
+                    }
+            }
+        }
+    }
 }

@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E87C9FD02F48553E00B8DC32 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = E87C9FCF2F48553E00B8DC32 /* FirebaseCore */; };
+		E87C9FD72F4857E700B8DC32 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = E87C9FD62F4857E700B8DC32 /* GoogleSignIn */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E875B0752F4749B000BD5941 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +34,23 @@
 		E875B07E2F4749B000BD5941 /* WishmartUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WishmartUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E87C9FD42F48562F00B8DC32 /* Exceptions for "Wishmart" folder in "Wishmart" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				Untitled.swift,
+			);
+			target = E875B0662F4749B000BD5941 /* Wishmart */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E875B0692F4749B000BD5941 /* Wishmart */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E87C9FD42F48562F00B8DC32 /* Exceptions for "Wishmart" folder in "Wishmart" target */,
+			);
 			path = Wishmart;
 			sourceTree = "<group>";
 		};
@@ -52,6 +71,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E87C9FD02F48553E00B8DC32 /* FirebaseCore in Frameworks */,
+				E87C9FD72F4857E700B8DC32 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +99,7 @@
 				E875B0692F4749B000BD5941 /* Wishmart */,
 				E875B0772F4749B000BD5941 /* WishmartTests */,
 				E875B0812F4749B000BD5941 /* WishmartUITests */,
+				E87C9FCE2F48553E00B8DC32 /* Frameworks */,
 				E875B0682F4749B000BD5941 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +112,13 @@
 				E875B07E2F4749B000BD5941 /* WishmartUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E87C9FCE2F48553E00B8DC32 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +141,8 @@
 			);
 			name = Wishmart;
 			packageProductDependencies = (
+				E87C9FCF2F48553E00B8DC32 /* FirebaseCore */,
+				E87C9FD62F4857E700B8DC32 /* GoogleSignIn */,
 			);
 			productName = Wishmart;
 			productReference = E875B0672F4749B000BD5941 /* Wishmart.app */;
@@ -195,6 +226,10 @@
 			);
 			mainGroup = E875B05E2F4749B000BD5941;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E87C9FCD2F4852FD00B8DC32 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				E87C9FD52F4857C000B8DC32 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E875B0682F4749B000BD5941 /* Products */;
 			projectDirPath = "";
@@ -397,6 +432,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Wishmart/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -428,6 +464,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Wishmart/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -570,6 +607,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E87C9FCD2F4852FD00B8DC32 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.9.0;
+			};
+		};
+		E87C9FD52F4857C000B8DC32 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E87C9FCF2F48553E00B8DC32 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E87C9FCD2F4852FD00B8DC32 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		E87C9FD62F4857E700B8DC32 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E87C9FD52F4857C000B8DC32 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E875B05F2F4749B000BD5941 /* Project object */;
 }
