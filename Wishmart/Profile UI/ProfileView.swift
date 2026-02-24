@@ -25,5 +25,6 @@ struct ProfileView: View {
             }
             .foregroundColor(.red)
         }
+        .frame(maxWidth: .infinity)
     }
 }

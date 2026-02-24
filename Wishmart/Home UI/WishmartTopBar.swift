@@ -41,7 +41,7 @@ struct WishmartTopBar: View {
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 36)
         }
         .frame(height: topBarHeight)
     }

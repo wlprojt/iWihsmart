@@ -25,7 +25,7 @@ struct ContentView: View {
                 OtpScreen(email: email)
 
             case .home:
-                HomeView()
+                MainTabsView()
             }
 
             // 🔔 Toast / error overlay
