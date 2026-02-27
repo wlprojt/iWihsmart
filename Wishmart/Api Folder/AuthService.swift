@@ -12,7 +12,7 @@ final class AuthService {
 
     func signUp(name: String, email: String, password: String) async throws {
         _ = try await api.request(
-            path: "api/auth/signup",
+            path: "api/auth/register",
             method: "POST",
             body: SignUpRequest(name: name, email: email, password: password),
             responseType: EmptyResponse.self
@@ -57,7 +57,7 @@ final class AuthService {
 
     func googleLogin(idToken: String) async throws -> GoogleLoginResponse {
         try await api.request(
-            path: "api/auth/google-login",
+            path: "api/auth/google",
             method: "POST",
             body: GoogleLoginRequest(idToken: idToken),
             responseType: GoogleLoginResponse.self

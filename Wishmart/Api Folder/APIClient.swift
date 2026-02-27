@@ -25,7 +25,7 @@ final class APIClient {
     static let shared = APIClient()
     private init() {}
 
-    let baseURL = URL(string: "http://192.168.29.138:3000/")!
+    let baseURL = URL(string: "http://192.168.29.137:3000/")!
 
     // ✅ Always build URL safely (supports query strings)
     private func makeURL(path: String) throws -> URL {

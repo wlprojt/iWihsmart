@@ -7,28 +7,29 @@
 
 import Foundation
 
+struct ProductsPageResponse: Decodable {
+    let products: [Product]
+    let total: Int
+    let page: Int
+    let pages: Int
+}
+
 struct Product: Identifiable, Codable {
 
-    // Mongo ID
     let id: String
-
-    // Core info
     let title: String
     let price: Double
     let sale_price: Double?
     let images: [String]
 
-    // Details
     let description: String
     let features: [String]
     let category: String
     let stock: Int
 
-    // Rating
     let rating: Double
     let rating_count: Int
 
-    // Timestamps (optional but safe)
     let createdAt: String?
     let updatedAt: String?
 
@@ -46,5 +47,29 @@ struct Product: Identifiable, Codable {
         case rating_count
         case createdAt
         case updatedAt
+    }
+
+    // ✅ Safe decoding (prevents "only Audio & Video not showing" issue)
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+
+        id = try c.decode(String.self, forKey: .id)
+        title = try c.decodeIfPresent(String.self, forKey: .title) ?? ""
+        price = try c.decodeIfPresent(Double.self, forKey: .price) ?? 0
+        sale_price = try c.decodeIfPresent(Double.self, forKey: .sale_price)
+
+        // IMPORTANT: tolerate null/missing images/features/description
+        images = try c.decodeIfPresent([String].self, forKey: .images) ?? []
+        description = try c.decodeIfPresent(String.self, forKey: .description) ?? ""
+        features = try c.decodeIfPresent([String].self, forKey: .features) ?? []
+
+        category = try c.decodeIfPresent(String.self, forKey: .category) ?? ""
+        stock = try c.decodeIfPresent(Int.self, forKey: .stock) ?? 0
+
+        rating = try c.decodeIfPresent(Double.self, forKey: .rating) ?? 0
+        rating_count = try c.decodeIfPresent(Int.self, forKey: .rating_count) ?? 0
+
+        createdAt = try c.decodeIfPresent(String.self, forKey: .createdAt)
+        updatedAt = try c.decodeIfPresent(String.self, forKey: .updatedAt)
     }
 }

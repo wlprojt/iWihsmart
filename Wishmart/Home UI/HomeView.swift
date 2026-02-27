@@ -10,53 +10,84 @@ import SwiftUI
 struct HomeView: View {
     @State private var selectedProductId: String? = nil
     @EnvironmentObject var cartVM: CartViewModel
+    @State private var showSearch = false
+    @State private var showAllProducts = false
+    @State private var allProductsCategory: String? = nil
+    @State private var showSaleScreen = false
+    @State private var selectedCategory: String? = nil
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                    WishmartTopBar {
-                        print("Search tapped")
-                    }
-                    .padding(.horizontal)
+                WishmartTopBar {
+                                    showSearch = true
+                                }
+                    .padding(.horizontal, 20)
                     
                     ScrollView {
-                        HeroPromoCard()
-                        ShopByCategoryCard()
+                        HeroPromoCard(
+                            onShopNow: {
+                                allProductsCategory = "Audio & Video"
+                                        showAllProducts = true
+                            }
+                        )
+                        ShopByCategoryCard { cat in
+                            allProductsCategory = (cat.title == "All Products") ? "" : cat.title
+                            showAllProducts = true
+                        }
                         VStack() {
-                            PromoTilesRow()
+                            PromoTilesRow { tile in
+                                if tile.title.contains("30%") {
+                                    allProductsCategory = "Gadgets"
+                                    showAllProducts = true
+                                }
+                                if tile.title.contains("case") {
+                                    allProductsCategory = "Gadgets"
+                                    showAllProducts = true
+                                }
+                            }
                         }
                         .padding(.horizontal, 25)
                         .padding()
                         VStack() {
                             TodaysBestDealSection(
-                                onSeeMore: { print("See more") },
+                                onSeeMore: { showSaleScreen = true },
                                 onProductTap: { p in selectedProductId = p.id }
                             )
                         }
                         .padding()
                         VStack() {
                             PromoRowsSection { row in
-                                print("Tapped:", row.title)
+                                selectedCategory = row.category
                             }
                         }
                         .padding(.horizontal, 25)
                         VStack() {
                             AudioVideoSection(
-                                onSeeMore: { print("See more audio & video") },
+                                onSeeMore: {
+                                    allProductsCategory = "Audio & Video"
+                                            showAllProducts = true
+                                },
                                 onProductTap: { p in selectedProductId = p.id }
                             )
                         }
                         .padding()
                         VStack() {
                             HomeAppliancesSection(
-                                onSeeMore: { print("See more audio & video") },
+                                onSeeMore: {
+                                    allProductsCategory = "Home Appliances"
+                                            showAllProducts = true
+                                },
                                 onProductTap: { p in selectedProductId = p.id }
                             )
                         }
                         .padding()
                         VStack() {
                             AirConditionerSection(
-                                onSeeMore: { print("See more audio & video") },
+                                onSeeMore: {
+                                    allProductsCategory = "Air Conditioner"
+                                            showAllProducts = true
+                                },
                                 onProductTap: { p in selectedProductId = p.id }
                             )
                         }
@@ -69,14 +100,20 @@ struct HomeView: View {
                         .padding(.horizontal, 25)
                         VStack() {
                             KitchenAppliancesSection(
-                                onSeeMore: { print("See more audio & video") },
+                                onSeeMore: {
+                                    allProductsCategory = "Kitchen Appliances"
+                                            showAllProducts = true
+                                },
                                 onProductTap: { p in selectedProductId = p.id }
                             )
                         }
                         .padding()
                         VStack() {
                             RefrigeratorsSection(
-                                onSeeMore: { print("See more audio & video") },
+                                onSeeMore: {
+                                    allProductsCategory = "Refrigerator"
+                                            showAllProducts = true
+                                },
                                 onProductTap: { p in selectedProductId = p.id }
                             )
                         }
@@ -89,20 +126,28 @@ struct HomeView: View {
                         .padding(.horizontal, 25)
                         VStack() {
                             PCsLaptopsSection(
-                                onSeeMore: { print("See more audio & video") },
+                                onSeeMore: {
+                                    allProductsCategory = "PCs & Laptop"
+                                            showAllProducts = true
+                                },
                                 onProductTap: { p in selectedProductId = p.id }
                             )
                         }
                         .padding()
                         VStack() {
                             GadgetsSection(
-                                onSeeMore: { print("See more audio & video") },
+                                onSeeMore: {
+                                    allProductsCategory = "Gadgets"
+                                            showAllProducts = true
+                                },
                                 onProductTap: { p in selectedProductId = p.id }
                             )
                         }
                         .padding()
                         VStack() {
-                            BrandDealCard()
+                            BrandDealCard(categoryToOpen: "Home Appliances") { cat in
+                                selectedCategory = cat
+                            }
                         }
                         .padding(.horizontal, 25)
                         VStack() {
@@ -117,6 +162,22 @@ struct HomeView: View {
                                 .environmentObject(cartVM)
                                 .navigationBarHidden(true) // because you have your own top bar
                         }
+            .navigationDestination(isPresented: $showSearch) {
+                            SearchScreen()
+                                .navigationBarHidden(true)
+                        }
+            .navigationDestination(isPresented: $showAllProducts) {
+                AllProductsScreen(category: allProductsCategory ?? "")
+                    .navigationBarHidden(true)
+            }
+            .navigationDestination(isPresented: $showSaleScreen) {
+                SaleProductsScreen()
+                    .navigationBarHidden(true)
+            }
+            .navigationDestination(item: $selectedCategory) { cat in
+                AllProductsScreen(category: cat)
+                    .navigationBarHidden(true)
+            }
             }
     }
 }

@@ -27,7 +27,8 @@ struct MainTabsView: View {
                         .environmentObject(cartVM)
 
                 case .menu:
-                    Text("Menu Screen")
+                    MenuScreen()
+                        .environmentObject(cartVM)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

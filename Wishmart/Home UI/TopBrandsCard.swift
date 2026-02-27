@@ -51,7 +51,7 @@ struct TopBrandsCard: View {
                 .padding(22)
             }
             .frame(maxWidth: .infinity)
-            .background(Color(.systemGray6))
+            .background(Color(.white))
             .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
             .shadow(color: Color.black.opacity(0.16), radius: 14, x: 0, y: 10)
             .overlay(

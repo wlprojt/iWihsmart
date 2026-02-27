@@ -12,20 +12,15 @@ struct WishmartTopBar: View {
 
     var body: some View {
         ZStack {
-            Color.blue
-                .ignoresSafeArea(edges: .top)
+            Color.blue.ignoresSafeArea(edges: .top)
 
             HStack(spacing: 10) {
 
-                // ⭐ Star icon
                 Image("Logo")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 30, height: 30)
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundColor(.yellow)
 
-                // wishmart text
                 Text("wishmart")
                     .font(.system(size: 30, weight: .bold))
                     .italic()
@@ -33,7 +28,6 @@ struct WishmartTopBar: View {
 
                 Spacer()
 
-                // 🔍 Search icon
                 Button(action: onSearchTap) {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 20, weight: .semibold))
@@ -41,22 +35,15 @@ struct WishmartTopBar: View {
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.horizontal, 36)
+            .padding(.horizontal, 20)     // ✅ pushes below notch
+            .padding(.bottom, 10)          // ✅ gives nice height
         }
-        .frame(height: topBarHeight)
+        .frame(height: safeTop)       // ✅ perfect topbar height
     }
 
-    // MARK: - Status bar + toolbar height
-    private var topBarHeight: CGFloat {
-        let window = UIApplication.shared.connectedScenes
+    private var safeTop: CGFloat {
+        UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
-            .first?.windows.first
-
-        let statusBarHeight = window?.safeAreaInsets.top ?? 10
-        return statusBarHeight + 10
+            .first?.windows.first?.safeAreaInsets.top ?? 0
     }
-}
-
-#Preview {
-    WishmartTopBar()
 }

@@ -9,24 +9,27 @@ import SwiftUI
 
 struct BrandDealCard: View {
 
-    // ✅ Replace with your asset name OR remote URL usage
-    var imageName: String = "brand_deal_washer"
+    // If you pass remoteImageURL, it will be used. Otherwise assetName will be used.
+    var assetName: String = "WImage"
+    var remoteImageURL: String? = nil
 
     var tagText: String = "BRAND’S DEAL"
     var titleText: String = "Save up to $200 on select\nSamsung washing machine"
     var descText: String = "Tortor purus et quis aenean tempus tellus fames."
     var ctaText: String = "Shop now"
 
-    var onTap: () -> Void = {}
+    // ✅ what to open
+    var categoryToOpen: String = "Home Appliances"
+    var onTap: (String) -> Void = { _ in }
 
     var body: some View {
-        Button(action: onTap) {
+        Button {
+            onTap(categoryToOpen)
+        } label: {
             VStack(alignment: .leading, spacing: 14) {
 
                 // Image
-                Image("WImage")
-                    .resizable()
-                    .scaledToFill()
+                imageView
                     .frame(height: 230)
                     .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -46,7 +49,7 @@ struct BrandDealCard: View {
                         .fixedSize(horizontal: false, vertical: true)
 
                     Text(descText)
-                        .font(.system(size: 18, weight: .regular))
+                        .font(.system(size: 18))
                         .foregroundColor(.gray)
                         .fixedSize(horizontal: false, vertical: true)
 
@@ -59,7 +62,7 @@ struct BrandDealCard: View {
                 .padding(.bottom, 6)
             }
             .padding(18)
-            .background(Color(.systemGray6))
+            .background(Color(.white))
             .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
             .shadow(color: Color.black.opacity(0.16), radius: 14, x: 0, y: 10)
             .overlay(
@@ -70,14 +73,23 @@ struct BrandDealCard: View {
         .buttonStyle(.plain)
         .padding(.horizontal, 16)
     }
-}
 
-#Preview {
-    ZStack {
-        Color(.systemGroupedBackground).ignoresSafeArea()
-        VStack {
-            BrandDealCard()
+    @ViewBuilder
+    private var imageView: some View {
+        if let remoteImageURL,
+           let url = URL(string: remoteImageURL) {
+            ZStack {
+                Color.gray.opacity(0.08)
+                AsyncImage(url: url) { img in
+                    img.resizable().scaledToFill()
+                } placeholder: {
+                    ProgressView()
+                }
+            }
+        } else {
+            Image(assetName)
+                .resizable()
+                .scaledToFill()
         }
-        .padding(.top, 12)
     }
 }

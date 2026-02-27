@@ -12,8 +12,9 @@ struct PromoRowModel: Identifiable {
     let title: String
     let subtitle: String
     let cta: String
-    let imageName: String     // Asset name
+    let imageName: String
     let background: Color
+    let category: String
 }
 
 struct PromoRowsSection: View {
@@ -24,21 +25,24 @@ struct PromoRowsSection: View {
             subtitle: "Starting at $49",
             cta: "Shop now",
             imageName: "HeadPhone",
-            background: Color(red: 0.93, green: 0.95, blue: 0.96)
+            background: Color(red: 0.93, green: 0.95, blue: 0.96),
+            category: "Audio & Video"
         ),
         .init(
             title: "Grooming",
             subtitle: "Starting at $49",
             cta: "Shop now",
             imageName: "Treamer",
-            background: Color(red: 0.93, green: 0.95, blue: 0.96)
+            background: Color(red: 0.93, green: 0.95, blue: 0.96),
+            category: "Gadgets"
         ),
         .init(
             title: "Video games",
             subtitle: "Starting at $49",
             cta: "Shop now",
             imageName: "Games",
-            background: Color(red: 0.96, green: 0.90, blue: 0.78)
+            background: Color(red: 0.96, green: 0.90, blue: 0.78),
+            category: "Gadgets"
         )
     ]
 
@@ -47,9 +51,7 @@ struct PromoRowsSection: View {
     var body: some View {
         VStack(spacing: 18) {
             ForEach(rows) { row in
-                Button {
-                    onTap?(row)
-                } label: {
+                Button { onTap?(row) } label: {
                     PromoRowCard(row: row)
                 }
                 .buttonStyle(.plain)

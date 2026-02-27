@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HeroPromoCard: View {
+    var onShopNow: () -> Void = {}
+    
     var body: some View {
         VStack(spacing: 0) {
             // Top Image
@@ -42,7 +44,7 @@ struct HeroPromoCard: View {
 
                 // CTA
                 Button {
-                    print("Shop now tapped")
+                    onShopNow()
                 } label: {
                     HStack(spacing: 8) {
                         Text("Shop now")
@@ -57,6 +59,7 @@ struct HeroPromoCard: View {
             }
             .padding(20)
             .background(Color.white)
+            .padding(.horizontal, 16)
         }
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .shadow(color: Color.black.opacity(0.12), radius: 14, x: 0, y: 8)
