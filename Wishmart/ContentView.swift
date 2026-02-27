@@ -14,6 +14,9 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             switch authVM.step {
+            case .booting:
+                ProgressView("Loading...")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             case .login:
                 LoginScreen()

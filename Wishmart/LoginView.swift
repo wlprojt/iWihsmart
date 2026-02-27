@@ -27,7 +27,7 @@ struct LoginView: View {
                 VStack {
                     Spacer(minLength: 130)
 
-                    CardContainer {
+                    LoginCardContainer {
                         VStack(spacing: 18) {
 
                             // Title
@@ -158,7 +158,7 @@ struct LoginView: View {
 
 // MARK: - Card Container
 
-private struct CardContainer<Content: View>: View {
+private struct LoginCardContainer<Content: View>: View {
     @ViewBuilder var content: Content
 
     var body: some View {

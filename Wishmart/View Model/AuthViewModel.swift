@@ -10,6 +10,7 @@ import SwiftUI
 internal import Combine
 
 enum AuthFlowStep: Equatable {
+    case booting
     case login
     case signup
     case otp(email: String)
@@ -19,43 +20,63 @@ enum AuthFlowStep: Equatable {
 @MainActor
 final class AuthViewModel: ObservableObject {
 
-    // MARK: - UI State
-    @Published var step: AuthFlowStep = .login
+    // ✅ start with booting so login won't flash
+    @Published var step: AuthFlowStep = .booting
 
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var toastMessage: String? = nil
 
-    // Form fields (optional — you can keep fields inside Views too)
     @Published var name: String = ""
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var otp: String = ""
 
-    // Logged in user
     @Published var userEmail: String? = nil
 
     private let service = AuthService()
 
     init() {
-        // If token exists, try to validate
-        if KeychainStore.shared.getToken()?.isEmpty == false {
-            Task { await self.bootstrapAuth() }
-        }
+        // ✅ always bootstrap once on app start
+        Task { await self.bootstrapAuth() }
     }
 
-    // MARK: - Startup check
     func bootstrapAuth() async {
         isLoading = true
         defer { isLoading = false }
 
+        let token = KeychainStore.shared.getToken()
+        print("BOOT token:", token ?? "nil")
+
+        guard let token, !token.isEmpty else {
+            step = .login
+            return
+        }
+
+        // ✅ show cached email instantly
+        if let cached = LocalUserStore.getEmail(), !cached.isEmpty {
+            userEmail = cached
+        }
+
+        step = .home
+
         do {
             let me = try await service.me()
             userEmail = me.email
-            step = .home
+            LocalUserStore.saveEmail(me.email) // ✅ keep updated
+            print("BOOT me ok:", me.email)
+        } catch let apiErr as APIError {
+            print("BOOT me failed:", apiErr.localizedDescription)
+
+            if case .http(let code, _) = apiErr, code == 401 {
+                KeychainStore.shared.clearToken()
+                LocalUserStore.clear()        // ✅ clear cached email too
+                userEmail = nil
+                step = .login
+            }
         } catch {
-            KeychainStore.shared.clearToken()
-            step = .login
+            print("BOOT me failed (network):", error.localizedDescription)
+            // offline -> keep cached email
         }
     }
 
@@ -72,6 +93,7 @@ final class AuthViewModel: ObservableObject {
             let res = try await service.signIn(email: cleanEmail, password: password)
             KeychainStore.shared.saveToken(res.token)
             userEmail = res.user.email
+            LocalUserStore.saveEmail(res.user.email)
             toastMessage = "Login Successful"
             step = .home
         } catch {
@@ -79,7 +101,6 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Signup (OTP sent)
     func signup() async {
         let cleanEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty, !cleanEmail.isEmpty, !password.isEmpty else { return }
@@ -97,7 +118,6 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Verify OTP (returns JWT)
     func verifyOtp() async {
         guard case .otp(let otpEmail) = step else { return }
         guard !otp.isEmpty else { return }
@@ -111,6 +131,7 @@ final class AuthViewModel: ObservableObject {
             if res.ok {
                 KeychainStore.shared.saveToken(res.token)
                 userEmail = otpEmail
+                LocalUserStore.saveEmail(otpEmail)
                 toastMessage = "OTP Verified"
                 step = .home
             } else {
@@ -136,7 +157,6 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Forgot password
     func sendResetLink() async {
         let cleanEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleanEmail.isEmpty else { return }
@@ -153,7 +173,6 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Google login (idToken from GoogleSignIn SDK)
     func googleLogin(idToken: String) async {
         guard !idToken.isEmpty else { return }
 
@@ -165,6 +184,7 @@ final class AuthViewModel: ObservableObject {
             let res = try await service.googleLogin(idToken: idToken)
             KeychainStore.shared.saveToken(res.token)
             userEmail = res.user.email
+            LocalUserStore.saveEmail(res.user.email)
             toastMessage = "Login Successful"
             step = .home
         } catch {
@@ -172,10 +192,10 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Logout
     func logout() {
         KeychainStore.shared.clearToken()
         userEmail = nil
+        LocalUserStore.clear()
         name = ""
         email = ""
         password = ""
@@ -183,7 +203,6 @@ final class AuthViewModel: ObservableObject {
         step = .login
     }
 
-    // MARK: - Navigation helpers
     func goToLogin() { step = .login }
     func goToSignup() { step = .signup }
 }

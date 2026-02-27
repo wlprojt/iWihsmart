@@ -10,50 +10,58 @@ import SwiftUI
 struct CartScreen: View {
 
     @EnvironmentObject var vm: CartViewModel
+    @State private var goCheckout = false
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        NavigationStack {
+            ZStack(alignment: .bottom) {
 
-            ScrollView {
-                VStack(spacing: 14) {
-                    
-                    if vm.items.isEmpty && !vm.isLoading {
-                        VStack(spacing: 8) {
-                            Image(systemName: "cart")
-                                .font(.system(size: 40))
-                                .foregroundColor(.gray.opacity(0.6))
-                            Text("Your cart is empty")
-                                .foregroundColor(.gray)
-                        }
-                        .padding(.top, 60)
-                    }
-                    
-                    ForEach(vm.items) { item in
-                        CartItemRow(
-                            item: item,
-                            onQtyChange: { newQty in
-                                Task { await vm.updateQty(itemId: item._id, qty: newQty) }
-                            },
-                            onDelete: {
-                                Task { await vm.remove(itemId: item._id) }
+                ScrollView {
+                    VStack(spacing: 14) {
+
+                        if vm.items.isEmpty && !vm.isLoading {
+                            VStack(spacing: 8) {
+                                Image(systemName: "cart")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.gray.opacity(0.6))
+                                Text("Your cart is empty")
+                                    .foregroundColor(.gray)
                             }
-                        )
+                            .padding(.top, 60)
+                        }
+
+                        ForEach(vm.items) { item in
+                            CartItemRow(
+                                item: item,
+                                onQtyChange: { newQty in
+                                    Task { await vm.updateQty(itemId: item._id, qty: newQty) }
+                                },
+                                onDelete: {
+                                    Task { await vm.remove(itemId: item._id) }
+                                }
+                            )
+                        }
+
+                        Spacer().frame(height: 90)
                     }
-
-                    // ✅ spacing so last item not hidden behind bar
-                    Spacer().frame(height: 90)
+                    .padding()
                 }
-                .padding()
-            }
-            .task { await vm.fetchCart() }
+                .task { await vm.fetchCart() }
 
-            // ✅ Sticky checkout bar
-            CheckoutBar(total: vm.totalPrice) {
-                // TODO: Navigate to checkout screen
-                print("Checkout tapped. Total:", vm.totalPrice)
+                // ✅ Sticky checkout bar
+                CheckoutBar(total: vm.totalPrice) {
+                    guard vm.totalPrice > 0 else { return }
+                    goCheckout = true
+                }
+            }
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle("Cart")
+            .navigationBarTitleDisplayMode(.large)
+            .navigationDestination(isPresented: $goCheckout) {
+                CheckoutScreen()
+                    .environmentObject(vm) // ✅ pass same CartViewModel
             }
         }
-        .background(Color(.systemGroupedBackground))
     }
 }
 

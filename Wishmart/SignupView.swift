@@ -26,7 +26,7 @@ struct SignupView: View {
                 VStack {
                     Spacer(minLength: 100)
 
-                    CardContainer {
+                    SignupCardContainer {
                         VStack(spacing: 18) {
 
                             // Title
@@ -156,7 +156,7 @@ struct SignupView: View {
 
 // MARK: - Shared UI Components
 
-private struct CardContainer<Content: View>: View {
+private struct SignupCardContainer<Content: View>: View {
     @ViewBuilder var content: Content
 
     var body: some View {
